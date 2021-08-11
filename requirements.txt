@@ -3,6 +3,6 @@ matplotlib
 seaborn
 pandas
 scikit-learn
-# keras==2.3.1
 tensorflow
-# tensorflow-estimator
+numpy
+opencv-python
