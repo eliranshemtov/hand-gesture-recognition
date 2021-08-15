@@ -6,3 +6,4 @@ scikit-learn
 tensorflow
 numpy
 opencv-python
+mediapipe
