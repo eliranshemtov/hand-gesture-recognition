@@ -89,11 +89,16 @@ def media():
                 else:
                     dim = (int(s * ((max_x - min_x)/(max_y - min_y))), s)
                 resized = cv.resize(cropped, (dim[0], dim[1]), interpolation=cv.INTER_AREA)
-                temp = np.zeros((s, s, 3))
+                temp = np.zeros((s, s, 3)).astype(np.float32)
                 temp[0:dim[1], 0:dim[0]] = resized
-                # gray_temp = cv.cvtColor(temp, cv.COLOR_BGR2GRAY)
-                # image[0:s, 0:s] = gray_temp
-                image[0:s, 0:s] = temp
+                gray_temp = cv.cvtColor(temp, cv.COLOR_RGB2GRAY)
+                
+            
+                temp1 = np.zeros((s, s, 3))
+                temp1[0:s, 0:s, 0] = gray_temp
+                temp1[0:s, 0:s, 1] = gray_temp
+                temp1[0:s, 0:s, 2] = gray_temp
+                image[0:s, 0:s] = temp1
             cv.imshow('MediaPipe Hands', image)
             if cv.waitKey(5) & 0xFF == 27:
                 break
