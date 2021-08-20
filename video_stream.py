@@ -7,7 +7,10 @@ https://github.com/cansik/yolo-hand-detection
 import cv2 as cv
 import numpy as np
 import mediapipe as mp
+from keras.models import load_model
+import os
 
+abc = "abcdefghiklmnopqrstuvwxy"
 
 def capture_video_stream():
     print("starting webcam...")
@@ -34,6 +37,15 @@ def capture_video_stream():
 
 
 def media():
+
+    TRAINED_MODEL_PATH = "./resources/trained_model_2.h5"
+    if os.path.exists(TRAINED_MODEL_PATH):
+        print("Found a backup trained model file, will load now...")
+        model = load_model(TRAINED_MODEL_PATH)
+        print("Loaded model file:")
+    else:
+        raise Exception("MOFO!")
+
     mp_drawing = mp.solutions.drawing_utils
     mp_hands = mp.solutions.hands
     drawing_styles = mp.solutions.drawing_styles
@@ -59,7 +71,7 @@ def media():
             # Draw the hand annotations on the image.
             image.flags.writeable = True
             image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
-
+            image_for_prediction = image.copy()
             
             y , x, c = image.shape
             
@@ -78,31 +90,40 @@ def media():
                 max_x, max_y, min_x, min_y = max(lmxs), max(lmys), min(lmxs), min(lmys)
                 pad_w = int((max_x - min_x) * 0.15)
                 pad_h = int((max_y - min_y) * 0.15)
-                cv.putText(image, f"{max_x}, {max_y}, {min_x}, {min_y}", (10, 70), cv.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
+                # cv.putText(image, f"{max_x}, {max_y}, {min_x}, {min_y}", (10, 70), cv.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
                 cv.rectangle(image, (min_x-pad_w, min_y-pad_h), (max_x+pad_w, max_y+pad_h), (255,0,0), 4)
             
-                cropped = image[min_y-pad_h:max_y+pad_h, min_x-pad_w:max_x+pad_w]
+                cropped = image_for_prediction[min_y-pad_h:max_y+pad_h, min_x-pad_w:max_x+pad_w]
                 # image[0:cropped.shape[0], 0:cropped.shape[1]] = cropped
-                s = 200
+                s = 28
                 if max_x - min_x >= max_y - min_y:
                     dim = (s, int(s * ((max_y - min_y)/(max_x - min_x))))
                 else:
                     dim = (int(s * ((max_x - min_x)/(max_y - min_y))), s)
-                resized = cv.resize(cropped, (dim[0], dim[1]), interpolation=cv.INTER_AREA)
+                resized = cv.resize(cropped, dim, interpolation=cv.INTER_AREA)
                 temp = np.zeros((s, s, 3)).astype(np.float32)
+                # temp[:, :, :] = (255, 255, 255)
+
+                # hpad, wpad = s-dim[0], s-dim[1]
+                # print(hpad, wpad)
+
+                # temp[int(hpad/2):dim[1]+int(hpad/2), int(wpad/2):dim[0]+int(wpad/2)] = resized
                 temp[0:dim[1], 0:dim[0]] = resized
                 gray_temp = cv.cvtColor(temp, cv.COLOR_RGB2GRAY)
-                
+                normalized = gray_temp.astype(np.int) / 255
             
                 temp1 = np.zeros((s, s, 3))
                 temp1[0:s, 0:s, 0] = gray_temp
                 temp1[0:s, 0:s, 1] = gray_temp
                 temp1[0:s, 0:s, 2] = gray_temp
                 image[0:s, 0:s] = temp1
+
+                
+                result = np.argmax(model.predict(normalized.reshape(-1, 28, 28, 1)), axis=-1)
+                cv.putText(image, f"result: {abc[int(result)]}", (10, 70), cv.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
             cv.imshow('MediaPipe Hands', image)
             if cv.waitKey(5) & 0xFF == 27:
-                break
-            
+                break            
     cap.release()
 
 
