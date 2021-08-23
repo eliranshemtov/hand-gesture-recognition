@@ -38,7 +38,7 @@ def capture_video_stream():
 
 def media():
 
-    TRAINED_MODEL_PATH = "./resources/trained_model_2.h5"
+    TRAINED_MODEL_PATH = "./resources/trained_model_4.h5"
     if os.path.exists(TRAINED_MODEL_PATH):
         print("Found a backup trained model file, will load now...")
         model = load_model(TRAINED_MODEL_PATH)
@@ -95,7 +95,7 @@ def media():
             
                 cropped = image_for_prediction[min_y-pad_h:max_y+pad_h, min_x-pad_w:max_x+pad_w]
                 # image[0:cropped.shape[0], 0:cropped.shape[1]] = cropped
-                s = 28
+                s = 30
                 if max_x - min_x >= max_y - min_y:
                     dim = (s, int(s * ((max_y - min_y)/(max_x - min_x))))
                 else:
@@ -119,7 +119,7 @@ def media():
                 image[0:s, 0:s] = temp1
 
                 
-                result = np.argmax(model.predict(normalized.reshape(-1, 28, 28, 1)), axis=-1)
+                result = np.argmax(model.predict(normalized.reshape(-1, s, s, 1)), axis=-1)
                 cv.putText(image, f"result: {abc[int(result)]}", (10, 70), cv.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
             cv.imshow('MediaPipe Hands', image)
             if cv.waitKey(5) & 0xFF == 27:
