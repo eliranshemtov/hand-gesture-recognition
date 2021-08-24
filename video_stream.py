@@ -109,7 +109,7 @@ def media():
 
                 # temp[int(hpad/2):dim[1]+int(hpad/2), int(wpad/2):dim[0]+int(wpad/2)] = resized
                 temp[0:dim[1], 0:dim[0]] = resized
-                gray_temp = cv.cvtColor(temp, cv.COLOR_RGB2GRAY)
+                gray_temp = cv.cvtColor(temp, cv.COLOR_BGR2GRAY)
                 normalized = gray_temp.astype(np.int) / 255
             
                 temp1 = np.zeros((s, s, 3))
@@ -120,7 +120,8 @@ def media():
 
                 
                 result = np.argmax(model.predict(normalized.reshape(-1, s, s, 1)), axis=-1)
-                cv.putText(image, f"result: {abc[int(result)]}", (10, 70), cv.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
+                if 0<=result<len(abc):
+                    cv.putText(image, f"result: {abc[int(result)]}", (10, 70), cv.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
             cv.imshow('MediaPipe Hands', image)
             if cv.waitKey(5) & 0xFF == 27:
                 break            
