@@ -1,12 +1,10 @@
-FROM ermaker/keras
+FROM jupyter/scipy-notebook
 
 RUN pip install \
-    jupyter \
-    matplotlib \
-    seaborn \
-    pandas \ 
-    keras \
-    scikit-learn 
+    tensorflow \
+    numpy \
+    opencv-python \
+    mediapipe
 
 VOLUME /notebook
 WORKDIR /notebook
