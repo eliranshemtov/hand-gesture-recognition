@@ -4,9 +4,9 @@ from img_processing import recognize_hand_in_image, draw_frame, draw_hand, get_h
     bgr_to_grayscale, predict, load_model_from_file
 
 
-CLASSES = "abcdefghiklmnopqrstuvwxy"
-MODEL_VERSION = 4
-MODEL_IMAGE_SIZE = 30
+CLASSES = "ABW"
+MODEL_VERSION = 13
+MODEL_IMAGE_SIZE = 128
 MIN_HANDS_DETECTION_CONFIDENCE = 0.6
 MIN_HANDS_TRACKING_CONFIDENCE = 0.6
 

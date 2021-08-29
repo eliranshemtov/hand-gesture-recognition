@@ -5,7 +5,7 @@ import mediapipe as mp
 import matplotlib as plt
 from keras.models import Model, load_model
 from typing import NamedTuple, Tuple
-
+import sys
 
 def load_image(file_path: str) -> np.ndarray:
     return cv.imread(file_path)
@@ -62,16 +62,18 @@ def draw_frame(img, top_left_point: tuple, bottom_right_point: tuple, border_col
 
 def crop_hand(img, top_left_point: tuple, bottom_right_point: tuple, crop_size: int):
     img = img.copy()
-    top_left_x = top_left_point[0]
-    top_left_y = top_left_point[1]
-    bottom_right_x = bottom_right_point[0]
-    bottom_right_y = bottom_right_point[1]
+    y, x, _ = img.shape
+
+    top_left_x = max(top_left_point[0], 0)
+    top_left_y = max(top_left_point[1], 0)
+    bottom_right_x = min(bottom_right_point[0], x)
+    bottom_right_y = min(bottom_right_point[1], y)
 
     cropped = img[top_left_y:bottom_right_y, top_left_x:bottom_right_x]
 
     # Keeping aspect ratio of the image according to max(width,height)
-    w = bottom_right_x - top_left_x
-    h = bottom_right_y - top_left_y
+    h, w, _ = cropped.shape
+
     if w >= h:
         dim = (crop_size, int(crop_size * (h/w)))
     else:
@@ -101,7 +103,7 @@ def bgr_to_grayscale(img: np.ndarray, is_3d: bool) -> np.ndarray:
 
 def pre_processing(img: np.ndarray, size: int) -> np.ndarray:
     img = bgr_to_grayscale(img, is_3d=False)
-    normalized = img.astype(np.int) / 255
+    normalized = img.astype(np.uint8) / 255
     return normalized.reshape(-1, size, size, 1)
 
 
@@ -118,7 +120,7 @@ def plot_image(img: np.ndarray, cmap: str = "gray", figsize: Tuple[int] = (2,2))
 
 
 def load_model_from_file(model_version: int) -> Model:
-    model_file_path = f"./resources/trained_model_{model_version}.h5"
+    model_file_path = f"../resources/models/trained_model_{model_version}.h5"
     if os.path.exists(model_file_path):
         print("Found a backup trained model file, will load now...")
         model = load_model(model_file_path)
