@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 resources/asl_data_set
+resources/videos/**/*.jpg
+resources/models/
 # C extensions
 *.so
 
