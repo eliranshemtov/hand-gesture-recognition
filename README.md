@@ -4,29 +4,30 @@
 *****
 
 ## Abstract
-In this project we:
-1. Loaded a dataset of 78,000 ASL (American Sign Language) images.
-2. Pre-processed the dataset and evaluated the different classes distribution.
-3. Applied data augmentation techniques to widen the dataset's variety and variance.
-4. Created a convolutional neural network (CNN).
-5. Trained the CNN to accurately classify letters from the ASL (American Sign Language), on a given image.
-6. Validated the model's training results on a test set.
-7. Applied the same model on a simple application that takes a video-stream from the endpoint's camera as input, identifies the presence of a hand in the frame, and attempts to translate the ASL sign.
-*****
-## Dataset
-* We first based our model training and test phases on the following dataset, taken from Kaggle (*27,455 images*): 
-[Sign Language MNIST](https://www.kaggle.com/datamunge/sign-language-mnist?select=sign_mnist_test) <br>
-Since this dataset is very synthetic, it's usage led to poor results when testing with an external test set. 
+In this project we made 3 major attempts to train a neural network to successfully classify american sign language (ASL) images. <br>
+1. ### [ASL MNIST](https://www.kaggle.com/datamunge/sign-language-mnist) <br>
+   First we used the ASL MNIST dataset, to train a CNN model and achieved "amazing" results of almost 100% accuracy.
+   Unfortunately, this dataset is highly synthetic and is not close enough to real-world conditions. Therefore, we've made the next attempt.
+   The notebook that details this process could be [found here](https://github.com/eliranshemtov/hand-gesture-recognition/blob/main/notebook/asl-mnist.ipynb)
 
-* Therefore, we chose to re-train the model against a larger and less  synthetic dataset (*78,000 images*):
-[ASL Alphabet Image dataset](https://www.kaggle.com/grassknoted/asl-alphabet) 
+2. ### [ASL Alphabet](https://www.kaggle.com/grassknoted/asl-alphabet) <br> 
+   Then, we tried to improve the results and train a model with a better dataset that would be closer to normal non-lab environments. We used the ASL Alphabet    dataset which looks much more realistic and wide in range of angles.
+   Although this attempt yielded much better results, we still aimed to improve the model's fitting, so we turned to the third and final attempt.
+   The notebook that details this process could be [found here](https://github.com/eliranshemtov/hand-gesture-recognition/blob/main/notebook/asl-alphabet.ipynb)
+
+3. ### Tailormade wide-range videos <br>
+   Lastly we created a (slightly smaller) dataset, that was concluded by a set of videos of hand gestures from a wide set of angels. Each video was broken-down to a    set frames which the model trained on.
+   Due to time constraints we limited ourselves to 3 ASL chars: 'A', 'B', 'W'
+   The notebook that details this process could be [found here](https://github.com/eliranshemtov/hand-gesture-recognition/blob/main/notebook/main.ipynb)
+
 *****
-## Results:
-* XXX
-* XXX
-* XXX
-*****
+## Demo:
+<img src="https://github.com/eliranshemtov/hand-gesture-recognition/blob/main/resources/demos/demo-predictions.gif" alt="video-demo" width="500"/>
+
+
 ## How to run
+#### NOTE: The trained models could be found [here in this repository's releases section](https://github.com/eliranshemtov/hand-gesture-recognition/releases)
+
 There are few options to run this project's artifacts:
 * ### Colab:
     * Load ```./notebook/main.ipynb``` Jupyter-Notebook to [Google-Colab](https://colab.research.google.com/)
